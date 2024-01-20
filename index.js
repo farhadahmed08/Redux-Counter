@@ -2,16 +2,15 @@
 // action - increment , decrement , reset 
 // reducer 
 // store 
-const {createStore, combineReducers} = require('redux');
+const {createStore,applyMiddleware} = require('redux');
+const { default: logger } = require('redux-logger');
 
 
 
 // product constants 
 const GET_PRODUCTS = 'GET_PRODUCTS';
 const ADD_PRODUCT = 'ADD_PRODUCT'
-// cart constants 
-const GET_CART_PRODUCTS = 'GET_CART_PRODUCTS';
-const ADD_CART_PRODUCT = 'ADD_CART_PRODUCT '
+
 
 
 
@@ -20,11 +19,7 @@ const initialProductState = {
     products :['sugar','salt'],
     numberOfProducts : 2 
 }
-// cart state define 
-const initialCartState = {
-    carts :['coke'],
-    numberOfCart : 1
-}
+
 
 //action 
 
@@ -41,19 +36,7 @@ const  addProduct = (product)=>{
         payload:product
     }
 }
-// cart action
-const  getCartProduct = (product)=>{
-    return{
-        type:GET_CART_PRODUCTS,
-        payload:product
-    }
-}
-const  addCartProduct = (product)=>{
-    return{
-        type:ADD_CART_PRODUCT,
-        payload:product
-    }
-}
+
 
 
 // creating reducer --> logic here
@@ -76,39 +59,17 @@ const productReducer = (state = initialProductState ,action )=>{
           return state
     }
 }
-//cart reducer
-const cartReducer = (state = initialCartState ,action )=>{
-    switch (action.type) {
-        
-        case GET_CART_PRODUCTS:
-            
-         return {
-           ...state
-         }
-        case ADD_CART_PRODUCT:
-            
-         return {
-            carts: [...state.carts,action.payload],
-            numberOfCart : state.numberOfCart + 1
-         }
-    
-        default:
-          return state
-    }
-};
 
 
-const rootReducer = combineReducers({
-    productR:productReducer,
-    cartR :cartReducer
-})
+
+
 
 
 
 
 
 //store 
-const store = createStore(rootReducer);
+const store = createStore(productReducer,applyMiddleware(logger));
 store.subscribe(()=>{
     console.log(store.getState());
 })
@@ -118,8 +79,7 @@ store.subscribe(()=>{
 store.dispatch(getProducts())
 store.dispatch(addProduct('tea'))
 
-store.dispatch(getCartProduct())
-store.dispatch(addCartProduct('coffee'))
+
 
 
 
